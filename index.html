@@ -1,0 +1,2502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Siswa - Mystical Creatures Academy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6B46C1;
+            --secondary-color: #F59E0B;
+            --success-color: #10B981;
+            --error-color: #EF4444;
+            --bg-gradient-start: #1E1B4B;
+            --bg-gradient-end: #312E81;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --text-primary: #FFFFFF;
+            --text-secondary: #E5E7EB;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* Main Content Area */
+        .main-content {
+            width: 100%;
+            padding: 0;
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 2px solid rgba(251, 146, 60, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .demo-credentials {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .demo-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-info {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.3rem;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--error-color);
+            border-radius: 10px;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            color: var(--error-color);
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Game Page Styles (Hidden Initially) */
+        .game-container {
+            display: none;
+        }
+
+        /* Creature Selection Modal */
+        .selection-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+
+        .selection-modal.hidden {
+            display: none;
+        }
+
+        .selection-content {
+            background: linear-gradient(135deg, rgba(30, 27, 75, 0.95), rgba(49, 46, 129, 0.95));
+            border-radius: 30px;
+            padding: 3rem;
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+            border: 2px solid rgba(251, 146, 60, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .selection-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .selection-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .creatures-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .creature-option {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .creature-option::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(251, 146, 60, 0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .creature-option:hover::before {
+            opacity: 1;
+        }
+
+        .creature-option:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: var(--secondary-color);
+            box-shadow: 0 15px 30px rgba(251, 146, 60, 0.3);
+        }
+
+        .creature-egg {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+            filter: drop-shadow(0 0 15px rgba(251, 146, 60, 0.5));
+        }
+
+        .creature-name {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(251, 146, 60, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(251, 146, 60, 0.8)); }
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* User Info Bar */
+        .user-info {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-details {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .logout-btn {
+            padding: 0.5rem 1.5rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--error-color);
+            border-radius: 50px;
+            color: var(--error-color);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        /* Tab Menu */
+        .tab-menu {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+        }
+
+        .tab-item {
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: var(--text-secondary);
+            position: relative;
+        }
+
+        .tab-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .tab-item.active {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(251, 146, 60, 0.3);
+        }
+
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            animation: tabPulse 2s infinite;
+        }
+
+        @keyframes tabPulse {
+            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.7; transform: translateX(-50%) scale(1.2); }
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: tabFadeIn 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes tabFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Stats Dashboard */
+        .stats-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* Creature Display Area */
+        .creature-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .creature-stage {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .creature-visual {
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 2rem;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .creature-visual.evolution-ready {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                filter: drop-shadow(0 0 20px rgba(251, 146, 60, 0.5));
+            }
+            50% { 
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 30px rgba(251, 146, 60, 0.8));
+            }
+        }
+
+        .creature {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10rem;
+            filter: drop-shadow(0 0 20px rgba(251, 146, 60, 0.5));
+            transition: all 0.5s;
+            position: relative;
+            z-index: 10;
+        }
+
+        .creature.hatching {
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Evolution Animation */
+        .evolution-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .evolution-overlay.active {
+            pointer-events: all;
+        }
+
+        .spark {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: sparkFly 1s ease-out forwards;
+        }
+
+        @keyframes sparkFly {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .color-light {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            opacity: 0;
+            animation: colorPulse 0.5s ease-out;
+        }
+
+        @keyframes colorPulse {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .dna-helix {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        .dna-helix.active {
+            display: block;
+            animation: dnaRotate 2s linear;
+        }
+
+        @keyframes dnaRotate {
+            0% {
+                transform: rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(360deg) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .evolution-ready-text {
+            color: var(--secondary-color);
+            font-weight: bold;
+            margin-top: 1rem;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .progress-bar-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 50px;
+            height: 30px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+            border-radius: 50px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Sessions Grid */
+        .sessions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .session-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .session-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(251, 146, 60, 0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .session-card:hover::before {
+            opacity: 1;
+        }
+
+        .session-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            border-color: var(--secondary-color);
+        }
+
+        .session-card.completed {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+            border-color: var(--success-color);
+        }
+
+        .session-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .session-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .session-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .session-status {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Achievements */
+        .achievements-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .achievement {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .achievement.unlocked {
+            border-color: var(--secondary-color);
+            animation: achievementUnlock 0.5s;
+        }
+
+        @keyframes achievementUnlock {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .achievement-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .achievement-name {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Schedule Section */
+        .schedule-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .schedule-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .schedule-title {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+        }
+
+        .class-badge {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .schedule-days {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .schedule-day {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .schedule-day-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .schedule-day-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .schedule-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .schedule-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-color: rgba(251, 146, 60, 0.3);
+        }
+
+        .schedule-time {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .schedule-class {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .schedule-instructor {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+        }
+
+        .schedule-duration {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Assignment Section */
+        .assignment-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .assignment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .assignment-title {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+        }
+
+        .assignment-stats {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .assignment-stat {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .assignment-stat.pr {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--success-color);
+        }
+
+        .assignment-stat.quiz {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid #F59E0B;
+        }
+
+        .assignment-stat.exam {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--error-color);
+        }
+
+        .assignment-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .assignment-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .assignment-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .assignment-list::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 10px;
+        }
+
+        .assignment-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .assignment-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-color: rgba(251, 146, 60, 0.3);
+        }
+
+        .assignment-info {
+            flex: 1;
+        }
+
+        .assignment-date {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+        }
+
+        .assignment-time {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+        }
+
+        .assignment-type {
+            font-weight: bold;
+            font-size: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 0.3rem;
+        }
+
+        .assignment-type.pr {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .assignment-type.quiz {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .assignment-type.exam {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .assignment-instructor {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+        }
+
+        .assignment-description {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        /* Attendance Section */
+        .attendance-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .attendance-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .attendance-title {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+        }
+
+        .attendance-stats {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .attendance-stat {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .attendance-stat.present {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--success-color);
+        }
+
+        .attendance-stat.absent {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--error-color);
+        }
+
+        .attendance-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .attendance-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .attendance-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .attendance-list::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 10px;
+        }
+
+        .attendance-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .attendance-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-color: rgba(251, 146, 60, 0.3);
+        }
+
+        .attendance-info {
+            flex: 1;
+        }
+
+        .attendance-date {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+        }
+
+        .attendance-time {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+        }
+
+        .attendance-status {
+            font-weight: bold;
+            font-size: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            display: inline-block;
+        }
+
+        .attendance-status.present {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .attendance-status.absent {
+            background: var(--error-color);
+            color: white;
+        }
+
+        /* Control Buttons */
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn.secondary {
+            background: transparent;
+            border: 2px solid var(--secondary-color);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid var(--success-color);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--success-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .tab-menu {
+                flex-wrap: wrap;
+                gap: 0.3rem;
+            }
+            
+            .tab-item {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .schedule-days,
+            .attendance-list,
+            .assignment-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .sessions-grid {
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            }
+            
+            .creature-visual {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .creature {
+                font-size: 8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="login-card">
+            <h2 class="login-title">Portal Siswa</h2>
+            <p class="login-subtitle">Mystical Creatures Academy</p>
+            
+            <div class="error-message" id="errorMessage">
+                Invalid username or password. Please try again.
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    <input type="text" id="username" class="form-input" placeholder="Enter your username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="login-btn">Submit</button>
+            </form>
+            
+            <div class="demo-credentials">
+                <p class="demo-title">Demo Credentials:</p>
+                <p class="demo-info">Username: student1</p>
+                <p class="demo-info">Password: password1</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content (Hidden Initially) -->
+    <div class="main-content" id="mainContent" style="display: none;">
+        <!-- Game Page -->
+        <div class="game-container" id="gamePage">
+            <!-- Header -->
+            <header>
+                <h1>🌟 Mystical Creatures Academy</h1>
+                <p class="subtitle">Complete your journey and evolve your companion!</p>
+            </header>
+
+            <!-- User Info Bar -->
+            <div class="user-info">
+                <div class="user-details">
+                    <div class="user-avatar" id="userAvatar">S</div>
+                    <div>
+                        <div id="userDisplay">Student: student1</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">Level: <span id="userLevel">Beginner</span></div>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <!-- Tab Menu -->
+            <div class="tab-menu">
+                <div class="tab-item active" onclick="switchTab('progress', this)">Progress Pembelajaran</div>
+                <div class="tab-item" onclick="switchTab('achievements', this)">Pencapaian</div>
+                <div class="tab-item" onclick="switchTab('stats', this)">Statistik</div>
+                <div class="tab-item" onclick="switchTab('schedule', this)">Jadwal Kelas</div>
+                <div class="tab-item" onclick="switchTab('attendance', this)">List Absensi Harian</div>
+                <div class="tab-item" onclick="switchTab('assignment', this)">PR/Quiz/Exam</div>
+            </div>
+
+            <!-- Main Container -->
+            <div class="container">
+                <!-- Progress Tab Content -->
+                <div class="tab-content active" id="progressTab">
+                    <!-- Stats Dashboard -->
+                    <div class="stats-dashboard">
+                        <div class="stat-card">
+                            <div class="stat-value" id="completedSessions">0</div>
+                            <div class="stat-label">Sessions Completed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="currentStreak">0</div>
+                            <div class="stat-label">Current Streak</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalProgress">0%</div>
+                            <div class="stat-label">Total Progress</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="evolutionsCount">0</div>
+                            <div class="stat-label">Evolutions</div>
+                        </div>
+                    </div>
+
+                    <!-- Creature Display -->
+                    <div class="creature-container">
+                        <div class="creature-stage" id="creatureStage">Egg Stage</div>
+                        <div class="creature-visual" id="creatureVisual" onclick="triggerEvolution()">
+                            <div class="creature" id="creature">🥚</div>
+                            <div class="evolution-overlay" id="evolutionOverlay"></div>
+                        </div>
+                        <div class="evolution-ready-text" id="evolutionReadyText" style="display: none;">
+                            ⚡ Click to Evolve! ⚡
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="progressBar" style="width: 0%">
+                                <span id="progressText">0/12 Sessions</span>
+                            </div>
+                        </div>
+                        <p id="creatureDescription">Your journey begins with a mysterious egg...</p>
+                    </div>
+
+                    <!-- Sessions Grid -->
+                    <div class="sessions-grid" id="sessionsGrid">
+                        <!-- Sessions will be generated by JavaScript -->
+                    </div>
+
+                    <!-- Control Buttons -->
+                    <div class="controls">
+                        <button class="btn" onclick="completeNextSession()">Complete Next Session</button>
+                        <button class="btn secondary" onclick="resetProgress()">Reset Progress</button>
+                        <button class="btn secondary" onclick="loadSampleData()">Load Sample Data</button>
+                    </div>
+                </div>
+
+                <!-- Achievements Tab Content -->
+                <div class="tab-content" id="achievementsTab">
+                    <div class="achievements-section">
+                        <h2>🏆 Pencapaian Anda</h2>
+                        <div class="achievements-grid" id="achievementsGrid">
+                            <!-- Achievements will be generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Tab Content -->
+                <div class="tab-content" id="statsTab">
+                    <div class="stats-dashboard">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalTimeSpent">0</div>
+                            <div class="stat-label">Total Waktu (Jam)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="averageSessionTime">0</div>
+                            <div class="stat-label">Rata-rata Sesi (Menit)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="bestStreak">0</div>
+                            <div class="stat-label">Streak Terbaik</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="completionRate">0%</div>
+                            <div class="stat-label">Tingkat Penyelesaian</div>
+                        </div>
+                    </div>
+                    
+                    <div class="achievements-section" style="margin-top: 2rem;">
+                        <h2>📊 Grafik Progress</h2>
+                        <div style="background: var(--card-bg); border-radius: 15px; padding: 2rem; text-align: center;">
+                            <canvas id="progressChart" width="400" height="200" style="max-width: 100%; height: auto;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Tab Content -->
+                <div class="tab-content" id="scheduleTab">
+                    <div class="schedule-section">
+                        <div class="schedule-header">
+                            <h2 class="schedule-title">Jadwal Kelas</h2>
+                            <div class="class-badge" id="classBadge">Animasi 2D Fundamental</div>
+                        </div>
+                        <div class="schedule-days" id="scheduleDays">
+                            <!-- Schedule will be generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attendance Tab Content -->
+                <div class="tab-content" id="attendanceTab">
+                    <div class="attendance-section">
+                        <div class="attendance-header">
+                            <h2 class="attendance-title">List Absensi Harian</h2>
+                            <div class="attendance-stats">
+                                <div class="attendance-stat present">
+                                    <span>✓</span>
+                                    <span id="presentCount">0</span>
+                                </div>
+                                <div class="attendance-stat absent">
+                                    <span>✗</span>
+                                    <span id="absentCount">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="attendance-list" id="attendanceList">
+                            <!-- Attendance will be generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assignment Tab Content -->
+                <div class="tab-content" id="assignmentTab">
+                    <div class="assignment-section">
+                        <div class="assignment-header">
+                            <h2 class="assignment-title">PR/Quiz/Exam</h2>
+                            <div class="assignment-stats">
+                                <div class="assignment-stat pr">
+                                    <span>📝</span>
+                                    <span id="prCount">0</span>
+                                </div>
+                                <div class="assignment-stat quiz">
+                                    <span>❓</span>
+                                    <span id="quizCount">0</span>
+                                </div>
+                                <div class="assignment-stat exam">
+                                    <span>📋</span>
+                                    <span id="examCount">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="assignment-list" id="assignmentList">
+                            <!-- Assignments will be generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Creature Selection Modal -->
+            <div class="selection-modal" id="selectionModal">
+                <div class="selection-content">
+                    <h2 class="selection-title">Choose Your Companion</h2>
+                    <p class="selection-subtitle">Select creature that will accompany you on your learning journey</p>
+                    <div class="creatures-grid">
+                        <div class="creature-option" onclick="selectCreature('dragon')">
+                            <div class="creature-egg">🥚</div>
+                            <div class="creature-name">Dragon</div>
+                        </div>
+                        <div class="creature-option" onclick="selectCreature('tiger')">
+                            <div class="creature-egg">🥚</div>
+                            <div class="creature-name">Tiger</div>
+                        </div>
+                        <div class="creature-option" onclick="selectCreature('horse')">
+                            <div class="creature-egg">🥚</div>
+                            <div class="creature-name">Horse</div>
+                        </div>
+                        <div class="creature-option" onclick="selectCreature('lion')">
+                            <div class="creature-egg">🥚</div>
+                            <div class="creature-name">Lion</div>
+                        </div>
+                        <div class="creature-option" onclick="selectCreature('panther')">
+                            <div class="creature-egg">🥚</div>
+                            <div class="creature-name">Panther</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification -->
+            <div class="notification" id="notification">
+                <div class="notification-title" id="notificationTitle">Achievement Unlocked!</div>
+                <div id="notificationMessage">You've completed your first session!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // User Authentication
+        const validCredentials = {
+            'student1': 'password1',
+            'student2': 'password2',
+            'student3': 'password3'
+        };
+
+        // Student Class Information
+        const studentClasses = {
+            'student1': 'Animasi 2D Fundamental',
+            'student2': 'Animasi 3D Fundamental',
+            'student3': 'Game Design Fundamental'
+        };
+
+        // Class Schedules
+        const classSchedules = {
+            'Animasi 2D Fundamental': [
+                {
+                    day: 'Senin',
+                    time: '09:00 - 10:30',
+                    instructor: 'Wahyu Hidayat',
+                    duration: '1 jam 30 menit'
+                },
+                {
+                    day: 'Senin',
+                    time: '13:00 - 14:30',
+                    instructor: 'Wahyu Hidayat',
+                    duration: '1 jam 30 menit'
+                },
+                {
+                    day: 'Rabu',
+                    time: '10:00 - 11:30',
+                    instructor: 'Wahyu Hidayat',
+                    duration: '1 jam 30 menit'
+                },
+                {
+                    day: 'Jumat',
+                    time: '14:00 - 15:30',
+                    instructor: 'Wahyu Hidayat',
+                    duration: '1 jam 30 menit'
+                }
+            ],
+            'Animasi 3D Fundamental': [
+                {
+                    day: 'Selasa',
+                    time: '09:00 - 10:30',
+                    instructor: 'Andi Pratama',
+                    duration: '1 jam 30 menit'
+                },
+                {
+                    day: 'Selasa',
+                    time: '13:00 - 14:30',
+                    instructor: 'Andi Pratama',
+                    duration: '1 jam 30 menit'
+                },
+                {
+                    day: 'Kamis',
+                    time: '10:00 - 11:30',
+                    instructor: 'Andi Pratama',
+                    duration: '1 jam 30 menit'
+                },
+                {
+                    day: 'Sabtu',
+                    time: '09:00 - 10:30',
+                    instructor: 'Andi Pratama',
+                    duration: '1 jam 30 menit'
+                }
+            ],
+            'Game Design Fundamental': [
+                {
+                    day: 'Senin',
+                    time: '10:00 - 11:30',
+                    instructor: 'Siti Nurhaliza',
+                    duration: '1 jam 30 menit'
+                },
+                {
+                    day: 'Rabu',
+                    time: '13:00 - 14:30',
+                    instructor: 'Siti Nurhaliza',
+                    duration: '1 jam 30 menit'
+                },
+                {
+                    day: 'Jumat',
+                    time: '09:00 - 10:30',
+                    instructor: 'Siti Nurhaliza',
+                    duration: '1 jam 30 menit'
+                },
+                {
+                    day: 'Sabtu',
+                    time: '10:00 - 11:30',
+                    instructor: 'Siti Nurhaliza',
+                    duration: '1 jam 30 menit'
+                }
+            ]
+        };
+
+        // Assignment Data
+        const assignmentData = {
+            'student1': [
+                { date: '10 Nov 2025', day: 'Senin', time: '09:00 - 10:30', type: 'PR', instructor: 'Wahyu Hidayat', description: 'buat animasi 2D dengan Maya sederhana' },
+                { date: '11 Nov 2025', day: 'Selasa', time: '09:00 - 10:30', type: 'Exam', instructor: 'Wahyu Hidayat', description: 'buat animasi 2D dengan Maya untuk bentuk furnitur dalam ruangan' },
+                { date: '12 Nov 2025', day: 'Rabu', time: '09:00 - 10:30', type: 'Quiz', instructor: 'Wahyu Hidayat', description: 'quiz tentang teknik animasi frame-by-frame' },
+                { date: '13 Nov 2025', day: 'Kamis', time: '09:00 - 10:30', type: 'PR', instructor: 'Wahyu Hidayat', description: 'buat animasi karakter dengan efek khusus' },
+                { date: '14 Nov 2025', day: 'Jumat', time: '09:00 - 10:30', type: 'Exam', instructor: 'Wahyu Hidayat', description: 'ujian tengah semester materi dasar hingga pertengahan' },
+                { date: '15 Nov 2025', day: 'Sabtu', time: '09:00 - 10:30', type: 'Quiz', instructor: 'Wahyu Hidayat', description: 'quiz tentang prinsip animasi dan storyboarding' }
+            ],
+            'student2': [
+                { date: '10 Nov 2025', day: 'Selasa', time: '09:00 - 10:30', type: 'PR', instructor: 'Andi Pratama', description: 'buat model 3D dasar dengan Blender' },
+                { date: '11 Nov 2025', day: 'Rabu', time: '09:00 - 10:30', type: 'Exam', instructor: 'Andi Pratama', description: 'ujian materi modeling 3D dengan software' },
+                { date: '12 Nov 2025', day: 'Kamis', time: '09:00 - 10:30', type: 'PR', instructor: 'Andi Pratama', description: 'buat rigging sederhana untuk karakter 3D' },
+                { date: '13 Nov 2025', day: 'Jumat', time: '09:00 - 10:30', type: 'Quiz', instructor: 'Andi Pratama', description: 'quiz tentang teknik lighting dan rendering' },
+                { date: '14 Nov 2025', day: 'Sabtu', time: '09:00 - 10:30', type: 'Exam', instructor: 'Andi Pratama', description: 'ujian praktik modeling 3D' }
+            ],
+            'student3': [
+                { date: '10 Nov 2025', day: 'Senin', time: '10:00 - 11:30', type: 'PR', instructor: 'Siti Nurhaliza', description: 'buat desain level game sederhana' },
+                { date: '11 Nov 2025', day: 'Selasa', time: '10:00 - 11:30', type: 'Quiz', instructor: 'Siti Nurhaliza', description: 'quiz tentang prinsip desain game' },
+                { date: '12 Nov 2025', day: 'Rabu', time: '13:00 - 14:30', type: 'Exam', instructor: 'Siti Nurhaliza', description: 'ujian materi desain UI/UX' },
+                { date: '13 Nov 2025', day: 'Kamis', time: '10:00 - 11:30', type: 'PR', instructor: 'Siti Nurhaliza', description: 'buat prototipe game sederhana' },
+                { date: '14 Nov 2025', day: 'Jumat', time: '10:00 - 11:30', type: 'Quiz', instructor: 'Siti Nurhaliza', description: 'quiz tentang game mechanics dan balancing' },
+                { date: '15 Nov 2025', day: 'Sabtu', time: '10:00 - 11:30', type: 'Exam', instructor: 'Siti Nurhaliza', description: 'ujian akhir materi game design' }
+            ]
+        };
+
+        // Attendance Data
+        const attendanceData = {
+            'student1': [
+                { date: '10 Nov 2025', day: 'Senin', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '11 Nov 2025', day: 'Selasa', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '12 Nov 2025', day: 'Rabu', time: '09:00 - 10:30', status: 'Tidak Hadir' },
+                { date: '13 Nov 2025', day: 'Kamis', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '14 Nov 2025', day: 'Jumat', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '15 Nov 2025', day: 'Sabtu', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '16 Nov 2025', day: 'Senin', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '17 Nov 2025', day: 'Selasa', time: '09:00 - 10:30', status: 'Tidak Hadir' },
+                { date: '18 Nov 2025', day: 'Rabu', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '19 Nov 2025', day: 'Kamis', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '20 Nov 2025', day: 'Jumat', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '21 Nov 2025', day: 'Sabtu', time: '09:00 - 10:30', status: 'Hadir' }
+            ],
+            'student2': [
+                { date: '10 Nov 2025', day: 'Senin', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '11 Nov 2025', day: 'Selasa', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '12 Nov 2025', day: 'Rabu', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '13 Nov 2025', day: 'Kamis', time: '09:00 - 10:30', status: 'Tidak Hadir' },
+                { date: '14 Nov 2025', day: 'Jumat', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '15 Nov 2025', day: 'Sabtu', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '16 Nov 2025', day: 'Senin', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '17 Nov 2025', day: 'Selasa', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '18 Nov 2025', day: 'Rabu', time: '09:00 - 10:30', status: 'Tidak Hadir' },
+                { date: '19 Nov 2025', day: 'Kamis', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '20 Nov 2025', day: 'Jumat', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '21 Nov 2025', day: 'Sabtu', time: '09:00 - 10:30', status: 'Hadir' }
+            ],
+            'student3': [
+                { date: '10 Nov 2025', day: 'Senin', time: '10:00 - 11:30', status: 'Hadir' },
+                { date: '11 Nov 2025', day: 'Selasa', time: '09:00 - 10:30', status: 'Tidak Hadir' },
+                { date: '12 Nov 2025', day: 'Rabu', time: '13:00 - 14:30', status: 'Hadir' },
+                { date: '13 Nov 2025', day: 'Kamis', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '14 Nov 2025', day: 'Jumat', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '15 Nov 2025', day: 'Sabtu', time: '10:00 - 11:30', status: 'Hadir' },
+                { date: '16 Nov 2025', day: 'Senin', time: '10:00 - 11:30', status: 'Hadir' },
+                { date: '17 Nov 2025', day: 'Selasa', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '18 Nov 2025', day: 'Rabu', time: '13:00 - 14:30', status: 'Tidak Hadir' },
+                { date: '19 Nov 2025', day: 'Kamis', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '20 Nov 2025', day: 'Jumat', time: '09:00 - 10:30', status: 'Hadir' },
+                { date: '21 Nov 2025', day: 'Sabtu', time: '10:00 - 11:30', status: 'Hadir' }
+            ]
+        };
+
+        let currentUser = null;
+
+        // Game State
+        let gameState = {
+            selectedCreature: null,
+            completedSessions: [],
+            currentStreak: 0,
+            achievements: [],
+            lastCompletedDate: null,
+            evolutions: [],
+            evolutionStage: 0, // 0: egg, 1: baby, 2: kid, 3: teen, 4: adult
+            totalTimeSpent: 0,
+            bestStreak: 0,
+            sessionHistory: []
+        };
+
+        // Creature Evolution Configuration
+        const creatureEvolutions = {
+            dragon: {
+                egg: { emoji: '🥚', stage: 'Dragon Egg', description: 'A mysterious dragon egg awaits its destiny...' },
+                baby: { emoji: '🐣', stage: 'Dragon Hatchling', description: 'A tiny dragon emerges, full of potential!' },
+                kid: { emoji: '🐉', stage: 'Young Dragon', description: 'Your dragon grows stronger, learning to breathe small flames!' },
+                teen: { emoji: '🐲', stage: 'Teen Dragon', description: 'Your dragon develops magnificent wings and wisdom!' },
+                adult: { emoji: '🐉', stage: 'Ancient Dragon', description: 'A majestic dragon master, ruler of the skies!' }
+            },
+            tiger: {
+                egg: { emoji: '🥚', stage: 'Tiger Egg', description: 'A striped egg holds a fierce predator within...' },
+                baby: { emoji: '🐯', stage: 'Tiger Cub', description: 'An adorable tiger cub with tiny stripes appears!' },
+                kid: { emoji: '🐅', stage: 'Young Tiger', description: 'Your tiger grows, learning to hunt with grace!' },
+                teen: { emoji: '🐆', stage: 'Teen Tiger', description: 'A powerful teen tiger, master of the jungle!' },
+                adult: { emoji: '🦁', stage: 'Tiger Lord', description: 'A legendary tiger, king of all beasts!' }
+            },
+            horse: {
+                egg: { emoji: '🥚', stage: 'Horse Egg', description: 'An egg that gallops with untamed spirit...' },
+                baby: { emoji: '🐴', stage: 'Foal', description: 'A playful foal takes its first steps!' },
+                kid: { emoji: '🦄', stage: 'Young Steed', description: 'Your horse grows, developing magical abilities!' },
+                teen: { emoji: '🐎', stage: 'Teen Horse', description: 'A swift teen horse, faster than the wind!' },
+                adult: { emoji: '🦄', stage: 'Celestial Horse', description: 'A divine steed, galloping among the stars!' }
+            },
+            lion: {
+                egg: { emoji: '🥚', stage: 'Lion Egg', description: 'A golden egg holds royal courage...' },
+                baby: { emoji: '🦁', stage: 'Lion Cub', description: 'A brave lion cub with a tiny mane appears!' },
+                kid: { emoji: '🐯', stage: 'Young Lion', description: 'Your lion grows, developing a mighty roar!' },
+                teen: { emoji: '🦁', stage: 'Teen Lion', description: 'A powerful teen lion, protector of the pride!' },
+                adult: { emoji: '🦁', stage: 'Lion King', description: 'A majestic lion king, ruler of the savanna!' }
+            },
+            panther: {
+                egg: { emoji: '🥚', stage: 'Panther Egg', description: 'A dark egg holds shadowy mystery...' },
+                baby: { emoji: '🐆', stage: 'Panther Cub', description: 'A sleek panther cub emerges from the shadows!' },
+                kid: { emoji: '🐈‍⬛', stage: 'Young Panther', description: 'Your panther grows, mastering stealth!' },
+                teen: { emoji: '🐆', stage: 'Teen Panther', description: 'A swift teen panther, ghost of the night!' },
+                adult: { emoji: '🐈‍⬛', stage: 'Shadow Master', description: 'A legendary panther, master of darkness!' }
+            }
+        };
+
+        // Evolution Thresholds
+        const evolutionThresholds = {
+            0: 0,    // Egg
+            1: 3,    // Baby after 3 sessions
+            2: 6,    // Kid after 6 sessions
+            3: 9,    // Teen after 9 sessions
+            4: 12    // Adult after 12 sessions
+        };
+
+        // Achievements Configuration
+        const achievementsConfig = [
+            { id: 'first_step', name: 'First Step', icon: '👶', condition: (state) => state.completedSessions.length >= 1 },
+            { id: 'first_evolution', name: 'First Evolution', icon: '⚡', condition: (state) => state.evolutions.length >= 1 },
+            { id: 'quarter', name: 'Quarter Master', icon: '🎯', condition: (state) => state.completedSessions.length >= 3 },
+            { id: 'halfway', name: 'Halfway Hero', icon: '⚡', condition: (state) => state.completedSessions.length >= 6 },
+            { id: 'three_quarters', name: 'Almost There', icon: '🔥', condition: (state) => state.completedSessions.length >= 9 },
+            { id: 'graduate', name: 'Master Trainer', icon: '🏆', condition: (state) => state.completedSessions.length >= 12 },
+            { id: 'streak_3', name: 'On Fire', icon: '💥', condition: (state) => state.currentStreak >= 3 },
+            { id: 'streak_5', name: 'Unstoppable', icon: '⭐', condition: (state) => state.currentStreak >= 5 },
+            { id: 'perfect', name: 'Perfect Attendance', icon: '💯', condition: (state) => state.completedSessions.length === 12 },
+            { id: 'full_evolution', name: 'Evolution Master', icon: '🌟', condition: (state) => state.evolutionStage === 4 }
+        ];
+
+        // Initialize the application
+        function init() {
+            createStars();
+            setupLoginForm();
+        }
+
+        // Setup login form
+        function setupLoginForm() {
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleLogin();
+            });
+        }
+
+        // Handle login
+        function handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            if (validCredentials[username] && validCredentials[username] === password) {
+                // Login successful
+                currentUser = username;
+                errorMessage.classList.remove('show');
+                
+                // Update user display
+                document.getElementById('userDisplay').textContent = `Student: ${username}`;
+                document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+                
+                // Load user-specific game state
+                loadUserGameState();
+                
+                // Show main content
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                document.getElementById('gamePage').style.display = 'block';
+                
+                // Start the game
+                if (!gameState.selectedCreature) {
+                    document.getElementById('selectionModal').classList.remove('hidden');
+                } else {
+                    startGame();
+                }
+                
+                showNotification('Login Successful', `Welcome back, ${username}!`);
+            } else {
+                // Login failed
+                errorMessage.classList.add('show');
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // Handle logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                saveUserGameState();
+                currentUser = null;
+                
+                // Reset form
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                
+                // Show login page
+                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('mainContent').style.display = 'none';
+                
+                showNotification('Logged Out', 'You have been successfully logged out.');
+            }
+        }
+
+        // Switch tab functionality
+        function switchTab(tabName, tabElement) {
+            // Remove active class from all tabs and contents
+            document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked tab and corresponding content
+            tabElement.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Update stats when switching to stats tab
+            if (tabName === 'stats') {
+                updateStatsTab();
+                drawProgressChart();
+            }
+            
+            // Load schedule when switching to schedule tab
+            if (tabName === 'schedule') {
+                loadClassSchedule();
+            }
+            
+            // Load attendance when switching to attendance tab
+            if (tabName === 'attendance') {
+                loadAttendanceList();
+            }
+            
+            // Load assignments when switching to assignment tab
+            if (tabName === 'assignment') {
+                loadAssignmentList();
+            }
+        }
+
+        // Load assignment list
+        function loadAssignmentList() {
+            const assignments = assignmentData[currentUser];
+            const assignmentList = document.getElementById('assignmentList');
+            
+            // Clear existing assignments
+            assignmentList.innerHTML = '';
+            
+            // Calculate assignment statistics
+            let prCount = 0;
+            let quizCount = 0;
+            let examCount = 0;
+            
+            // Create assignment HTML
+            assignments.forEach(assignment => {
+                if (assignment.type === 'PR') prCount++;
+                else if (assignment.type === 'Quiz') quizCount++;
+                else if (assignment.type === 'Exam') examCount++;
+                
+                const assignmentItem = document.createElement('div');
+                assignmentItem.className = 'assignment-item';
+                
+                assignmentItem.innerHTML = `
+                    <div class="assignment-info">
+                        <div class="assignment-date">${assignment.date}</div>
+                        <div class="assignment-time">${assignment.day} - ${assignment.time}</div>
+                        <div class="assignment-type ${assignment.type.toLowerCase()}">${assignment.type}</div>
+                        <div class="assignment-instructor">Instruktur ${assignment.instructor}</div>
+                    </div>
+                    <div class="assignment-description">${assignment.description}</div>
+                `;
+                
+                assignmentList.appendChild(assignmentItem);
+            });
+            
+            // Update statistics
+            document.getElementById('prCount').textContent = prCount;
+            document.getElementById('quizCount').textContent = quizCount;
+            document.getElementById('examCount').textContent = examCount;
+        }
+
+        // Load attendance list
+        function loadAttendanceList() {
+            const attendance = attendanceData[currentUser];
+            const attendanceList = document.getElementById('attendanceList');
+            
+            // Clear existing attendance
+            attendanceList.innerHTML = '';
+            
+            // Calculate attendance statistics
+            let presentCount = 0;
+            let absentCount = 0;
+            
+            // Create attendance HTML
+            attendance.forEach(record => {
+                if (record.status === 'Hadir') {
+                    presentCount++;
+                } else {
+                    absentCount++;
+                }
+                
+                const attendanceItem = document.createElement('div');
+                attendanceItem.className = 'attendance-item';
+                
+                attendanceItem.innerHTML = `
+                    <div class="attendance-info">
+                        <div class="attendance-date">${record.date}</div>
+                        <div class="attendance-time">${record.day} - ${record.time}</div>
+                        <div class="attendance-status ${record.status === 'Hadir' ? 'present' : 'absent'}">${record.status}</div>
+                    </div>
+                `;
+                
+                attendanceList.appendChild(attendanceItem);
+            });
+            
+            // Update statistics
+            document.getElementById('presentCount').textContent = presentCount;
+            document.getElementById('absentCount').textContent = absentCount;
+        }
+
+        // Update stats tab with additional metrics
+        function updateStatsTab() {
+            const completedCount = gameState.completedSessions.length;
+            const totalTimeSpent = gameState.totalTimeSpent || (completedCount * 90); // 90 minutes per session
+            const averageSessionTime = completedCount > 0 ? Math.round(totalTimeSpent / completedCount) : 0;
+            const bestStreak = gameState.bestStreak || gameState.currentStreak;
+            const completionRate = Math.round((completedCount / 12) * 100);
+            
+            document.getElementById('totalTimeSpent').textContent = Math.round(totalTimeSpent / 60); // Convert to hours
+            document.getElementById('averageSessionTime').textContent = averageSessionTime;
+            document.getElementById('bestStreak').textContent = bestStreak;
+            document.getElementById('completionRate').textContent = completionRate + '%';
+        }
+
+        // Draw progress chart
+        function drawProgressChart() {
+            const canvas = document.getElementById('progressChart');
+            const ctx = canvas.getContext('2d');
+            const completedCount = gameState.completedSessions.length;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Set up chart dimensions
+            const padding = 40;
+            const chartWidth = canvas.width - padding * 2;
+            const chartHeight = canvas.height - padding * 2;
+            const barWidth = chartWidth / 12;
+            
+            // Draw axes
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+            
+            // Draw bars
+            for (let i = 0; i < 12; i++) {
+                const x = padding + i * barWidth + barWidth * 0.1;
+                const y = canvas.height - padding - (gameState.completedSessions.includes(i + 1) ? chartHeight * 0.8 : 0);
+                const width = barWidth * 0.8;
+                const height = gameState.completedSessions.includes(i + 1) ? chartHeight * 0.8 : 0;
+                
+                // Create gradient
+                const gradient = ctx.createLinearGradient(0, y, 0, canvas.height - padding);
+                gradient.addColorStop(0, '#F59E0B');
+                gradient.addColorStop(1, '#6B46C1');
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(x, y, width, height);
+                
+                // Draw session number
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`S${i + 1}`, x + width / 2, canvas.height - padding + 20);
+            }
+            
+            // Draw title
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Progress Sesi Pembelajaran', canvas.width / 2, 20);
+        }
+
+        // Load class schedule
+        function loadClassSchedule() {
+            const studentClass = studentClasses[currentUser];
+            const schedule = classSchedules[studentClass];
+            
+            // Update class badge
+            document.getElementById('classBadge').textContent = studentClass;
+            
+            // Group schedule by day
+            const scheduleByDay = {};
+            schedule.forEach(item => {
+                if (!scheduleByDay[item.day]) {
+                    scheduleByDay[item.day] = [];
+                }
+                scheduleByDay[item.day].push(item);
+            });
+            
+            // Clear existing schedule
+            const scheduleDays = document.getElementById('scheduleDays');
+            scheduleDays.innerHTML = '';
+            
+            // Create schedule HTML
+            Object.keys(scheduleByDay).forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'schedule-day';
+                
+                const dayTitle = document.createElement('div');
+                dayTitle.className = 'schedule-day-title';
+                dayTitle.textContent = day;
+                dayElement.appendChild(dayTitle);
+                
+                scheduleByDay[day].forEach(item => {
+                    const scheduleItem = document.createElement('div');
+                    scheduleItem.className = 'schedule-item';
+                    
+                    scheduleItem.innerHTML = `
+                        <div class="schedule-time">${item.time}</div>
+                        <div class="schedule-class">Kelas ${studentClass}</div>
+                        <div class="schedule-instructor">Instruktur ${item.instructor}</div>
+                        <div class="schedule-duration">Durasi: ${item.duration}</div>
+                    `;
+                    
+                    dayElement.appendChild(scheduleItem);
+                });
+                
+                scheduleDays.appendChild(dayElement);
+            });
+        }
+
+        // Load user-specific game state
+        function loadUserGameState() {
+            const saved = localStorage.getItem(`mysticalCreaturesState_${currentUser}`);
+            if (saved) {
+                gameState = JSON.parse(saved);
+            } else {
+                // Reset game state for new user
+                gameState = {
+                    selectedCreature: null,
+                    completedSessions: [],
+                    currentStreak: 0,
+                    achievements: [],
+                    lastCompletedDate: null,
+                    evolutions: [],
+                    evolutionStage: 0,
+                    totalTimeSpent: 0,
+                    bestStreak: 0,
+                    sessionHistory: []
+                };
+            }
+        }
+
+        // Save user-specific game state
+        function saveUserGameState() {
+            if (currentUser) {
+                localStorage.setItem(`mysticalCreaturesState_${currentUser}`, JSON.stringify(gameState));
+            }
+        }
+
+        // Select creature
+        function selectCreature(creature) {
+            gameState.selectedCreature = creature;
+            saveUserGameState();
+            document.getElementById('selectionModal').classList.add('hidden');
+            startGame();
+            showNotification('Creature Selected!', `You've chosen a ${creature} as your companion!`);
+        }
+
+        // Start the game after creature selection
+        function startGame() {
+            renderSessions();
+            renderAchievements();
+            updateUI();
+        }
+
+        // Create animated stars background
+        function createStars() {
+            const bgAnimation = document.getElementById('bgAnimation');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                bgAnimation.appendChild(star);
+            }
+        }
+
+        // Render session cards
+        function renderSessions() {
+            const grid = document.getElementById('sessionsGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 1; i <= 12; i++) {
+                const sessionCard = document.createElement('div');
+                sessionCard.className = 'session-card';
+                
+                const isCompleted = gameState.completedSessions.includes(i);
+                const isLocked = i > 1 && !gameState.completedSessions.includes(i - 1);
+                
+                if (isCompleted) {
+                    sessionCard.classList.add('completed');
+                }
+                if (isLocked) {
+                    sessionCard.classList.add('locked');
+                }
+                
+                sessionCard.innerHTML = `
+                    <div class="session-number">Session ${i}</div>
+                    <div class="session-icon">${isCompleted ? '✅' : isLocked ? '🔒' : '📚'}</div>
+                    <div class="session-status">${isCompleted ? 'Completed' : isLocked ? 'Locked' : 'Available'}</div>
+                `;
+                
+                if (!isLocked) {
+                    sessionCard.onclick = () => toggleSession(i);
+                }
+                
+                grid.appendChild(sessionCard);
+            }
+        }
+
+        // Toggle session completion
+        function toggleSession(sessionNumber) {
+            if (gameState.completedSessions.includes(sessionNumber)) {
+                // Uncomplete session
+                gameState.completedSessions = gameState.completedSessions.filter(s => s !== sessionNumber);
+                // Remove any sessions after this one
+                gameState.completedSessions = gameState.completedSessions.filter(s => s < sessionNumber);
+            } else {
+                // Complete session
+                if (sessionNumber === 1 || gameState.completedSessions.includes(sessionNumber - 1)) {
+                    gameState.completedSessions.push(sessionNumber);
+                    gameState.totalTimeSpent = (gameState.totalTimeSpent || 0) + 90; // Add 90 minutes
+                    gameState.sessionHistory.push({
+                        session: sessionNumber,
+                        date: new Date().toISOString(),
+                        duration: 90
+                    });
+                    updateStreak();
+                    checkEvolutionReady();
+                    checkAchievements();
+                    showNotification('Session Completed!', `You've completed Session ${sessionNumber}!`);
+                }
+            }
+            
+            saveUserGameState();
+            renderSessions();
+            updateUI();
+        }
+
+        // Complete next available session
+        function completeNextSession() {
+            const nextSession = gameState.completedSessions.length + 1;
+            if (nextSession <= 12) {
+                toggleSession(nextSession);
+            } else {
+                showNotification('Course Completed!', 'You have already completed all sessions!');
+            }
+        }
+
+        // Update streak
+        function updateStreak() {
+            const today = new Date().toDateString();
+            if (gameState.lastCompletedDate === today) {
+                return; // Already updated today
+            }
+            
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            if (gameState.lastCompletedDate === yesterday.toDateString()) {
+                gameState.currentStreak++;
+            } else {
+                gameState.currentStreak = 1;
+            }
+            
+            if (gameState.currentStreak > gameState.bestStreak) {
+                gameState.bestStreak = gameState.currentStreak;
+            }
+            
+            gameState.lastCompletedDate = today;
+        }
+
+        // Check if evolution is ready
+        function checkEvolutionReady() {
+            const completedCount = gameState.completedSessions.length;
+            let newStage = 0;
+            
+            for (let stage = 4; stage >= 0; stage--) {
+                if (completedCount >= evolutionThresholds[stage]) {
+                    newStage = stage;
+                    break;
+                }
+            }
+            
+            if (newStage > gameState.evolutionStage) {
+                // Evolution is ready
+                document.getElementById('creatureVisual').classList.add('evolution-ready');
+                document.getElementById('evolutionReadyText').style.display = 'block';
+            } else {
+                // Remove evolution ready indicators
+                document.getElementById('creatureVisual').classList.remove('evolution-ready');
+                document.getElementById('evolutionReadyText').style.display = 'none';
+            }
+        }
+
+        // Trigger evolution animation
+        function triggerEvolution() {
+            const completedCount = gameState.completedSessions.length;
+            let targetStage = 0;
+            
+            for (let stage = 4; stage >= 0; stage--) {
+                if (completedCount >= evolutionThresholds[stage]) {
+                    targetStage = stage;
+                    break;
+                }
+            }
+            
+            if (targetStage > gameState.evolutionStage) {
+                performEvolution(targetStage);
+            }
+        }
+
+        // Perform evolution with animation
+        function performEvolution(newStage) {
+            const overlay = document.getElementById('evolutionOverlay');
+            const creature = document.getElementById('creature');
+            
+            // Disable clicks during evolution
+            overlay.classList.add('active');
+            
+            // Create sparks
+            createSparks(overlay);
+            
+            // Create color lights
+            createColorLights(overlay);
+            
+            // Create DNA helix effect
+            createDNAHelix(overlay);
+            
+            // After animation, update creature
+            setTimeout(() => {
+                const stages = ['egg', 'baby', 'kid', 'teen', 'adult'];
+                const stageKey = stages[newStage];
+                const evolution = creatureEvolutions[gameState.selectedCreature][stageKey];
+                
+                creature.textContent = evolution.emoji;
+                creature.className = 'creature';
+                
+                document.getElementById('creatureStage').textContent = evolution.stage;
+                document.getElementById('creatureDescription').textContent = evolution.description;
+                
+                gameState.evolutionStage = newStage;
+                gameState.evolutions.push(newStage);
+                
+                document.getElementById('creatureVisual').classList.remove('evolution-ready');
+                document.getElementById('evolutionReadyText').style.display = 'none';
+                overlay.classList.remove('active');
+                overlay.innerHTML = '';
+                
+                checkAchievements();
+                saveUserGameState();
+                updateUI();
+                
+                showNotification('Evolution Complete!', `${evolution.stage} achieved!`);
+            }, 2000);
+        }
+
+        // Create spark effects
+        function createSparks(container) {
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const spark = document.createElement('div');
+                    spark.className = 'spark';
+                    spark.style.left = '50%';
+                    spark.style.top = '50%';
+                    spark.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
+                    spark.style.setProperty('--ty', (Math.random() - 0.5) * 200 + 'px');
+                    container.appendChild(spark);
+                }, i * 50);
+            }
+        }
+
+        // Create color light effects
+        function createColorLights(container) {
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F'];
+            
+            colors.forEach((color, index) => {
+                setTimeout(() => {
+                    const light = document.createElement('div');
+                    light.className = 'color-light';
+                    light.style.background = `radial-gradient(circle, ${color} 0%, transparent 70%)`;
+                    container.appendChild(light);
+                }, index * 200);
+            });
+        }
+
+        // Create DNA helix effect
+        function createDNAHelix(container) {
+            const dna = document.createElement('div');
+            dna.className = 'dna-helix active';
+            dna.innerHTML = `
+                <svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
+                    <path d="M100,20 Q120,50 100,80 T100,140 T100,180" 
+                          stroke="url(#gradient)" stroke-width="3" fill="none" opacity="0.8"/>
+                    <path d="M100,20 Q80,50 100,80 T100,140 T100,180" 
+                          stroke="url(#gradient)" stroke-width="3" fill="none" opacity="0.8"/>
+                    <defs>
+                        <linearGradient id="gradient">
+                            <stop offset="0%" stop-color="#FF6B6B"/>
+                            <stop offset="50%" stop-color="#4ECDC4"/>
+                            <stop offset="100%" stop-color="#45B7D1"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            `;
+            container.appendChild(dna);
+        }
+
+        // Check and unlock achievements
+        function checkAchievements() {
+            achievementsConfig.forEach(achievement => {
+                if (!gameState.achievements.includes(achievement.id) && achievement.condition(gameState)) {
+                    gameState.achievements.push(achievement.id);
+                    showNotification('Achievement Unlocked!', achievement.name);
+                }
+            });
+        }
+
+        // Render achievements
+        function renderAchievements() {
+            const grid = document.getElementById('achievementsGrid');
+            grid.innerHTML = '';
+            
+            achievementsConfig.forEach(achievement => {
+                const achievementCard = document.createElement('div');
+                achievementCard.className = 'achievement';
+                
+                if (gameState.achievements.includes(achievement.id)) {
+                    achievementCard.classList.add('unlocked');
+                }
+                
+                achievementCard.innerHTML = `
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-name">${achievement.name}</div>
+                `;
+                
+                grid.appendChild(achievementCard);
+            });
+        }
+
+        // Update UI elements
+        function updateUI() {
+            const completedCount = gameState.completedSessions.length;
+            const progressPercentage = Math.round((completedCount / 12) * 100);
+            
+            // Update stats
+            document.getElementById('completedSessions').textContent = completedCount;
+            document.getElementById('currentStreak').textContent = gameState.currentStreak;
+            document.getElementById('totalProgress').textContent = progressPercentage + '%';
+            document.getElementById('evolutionsCount').textContent = gameState.evolutions.length;
+            
+            // Update user level based on progress
+            let userLevel = 'Beginner';
+            if (completedCount >= 12) userLevel = 'Master';
+            else if (completedCount >= 9) userLevel = 'Expert';
+            else if (completedCount >= 6) userLevel = 'Advanced';
+            else if (completedCount >= 3) userLevel = 'Intermediate';
+            document.getElementById('userLevel').textContent = userLevel;
+            
+            // Update progress bar
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = progressPercentage + '%';
+            document.getElementById('progressText').textContent = `${completedCount}/12 Sessions`;
+            
+            // Update creature display
+            if (gameState.selectedCreature && !document.getElementById('selectionModal').classList.contains('hidden')) {
+                const stages = ['egg', 'baby', 'kid', 'teen', 'adult'];
+                const stageKey = stages[gameState.evolutionStage];
+                const evolution = creatureEvolutions[gameState.selectedCreature][stageKey];
+                
+                document.getElementById('creature').textContent = evolution.emoji;
+                document.getElementById('creatureStage').textContent = evolution.stage;
+                document.getElementById('creatureDescription').textContent = evolution.description;
+            }
+            
+            // Check evolution readiness
+            checkEvolutionReady();
+            
+            // Update achievements
+            renderAchievements();
+        }
+
+        // Reset progress
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This will clear all sessions, achievements, and evolutions.')) {
+                // Store the selected creature
+                const creature = gameState.selectedCreature;
+                
+                // Reset game state completely
+                gameState = {
+                    selectedCreature: creature,
+                    completedSessions: [],
+                    currentStreak: 0,
+                    achievements: [],
+                    lastCompletedDate: null,
+                    evolutions: [],
+                    evolutionStage: 0,
+                    totalTimeSpent: 0,
+                    bestStreak: 0,
+                    sessionHistory: []
+                };
+                
+                // Clear evolution overlay
+                document.getElementById('evolutionOverlay').innerHTML = '';
+                document.getElementById('evolutionOverlay').classList.remove('active');
+                
+                // Remove evolution-ready animations
+                document.getElementById('creatureVisual').classList.remove('evolution-ready');
+                document.getElementById('evolutionReadyText').style.display = 'none';
+                
+                // Reset creature to egg stage
+                if (creature) {
+                    const evolution = creatureEvolutions[creature]['egg'];
+                    document.getElementById('creature').textContent = evolution.emoji;
+                    document.getElementById('creature').className = 'creature';
+                    document.getElementById('creatureStage').textContent = evolution.stage;
+                    document.getElementById('creatureDescription').textContent = evolution.description;
+                }
+                
+                // Save the reset state
+                saveUserGameState();
+                
+                // Update all UI elements
+                renderSessions();
+                renderAchievements();
+                updateUI();
+                
+                // Show confirmation
+                showNotification('Progress Reset', 'All progress has been reset successfully!');
+            }
+        }
+
+        // Load sample data for testing
+        function loadSampleData() {
+            gameState.completedSessions = [1, 2, 3, 4, 5, 6];
+            gameState.currentStreak = 6;
+            gameState.totalTimeSpent = 540; // 6 sessions * 90 minutes
+            gameState.bestStreak = 6;
+            gameState.lastCompletedDate = new Date().toDateString();
+            gameState.sessionHistory = [
+                { session: 1, date: new Date().toISOString(), duration: 90 },
+                { session: 2, date: new Date().toISOString(), duration: 90 },
+                { session: 3, date: new Date().toISOString(), duration: 90 },
+                { session: 4, date: new Date().toISOString(), duration: 90 },
+                { session: 5, date: new Date().toISOString(), duration: 90 },
+                { session: 6, date: new Date().toISOString(), duration: 90 }
+            ];
+            checkEvolutionReady();
+            checkAchievements();
+            saveUserGameState();
+            renderSessions();
+            updateUI();
+            showNotification('Sample Data Loaded', 'Progress loaded for testing purposes!');
+        }
+
+        // Show notification
+        function showNotification(title, message) {
+            const notification = document.getElementById('notification');
+            document.getElementById('notificationTitle').textContent = title;
+            document.getElementById('notificationMessage').textContent = message;
+            
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
